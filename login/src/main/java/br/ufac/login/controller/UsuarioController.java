@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.ufac.login.controller.dto.UsuarioDto;
+import br.ufac.login.controller.dto.UsuarioRespostaDto;
 import br.ufac.login.models.Usuario;
 import br.ufac.login.service.UsuarioService;
 
 @RestController
 @RequestMapping("/usuario")
-public class UsuarioController implements IController<Usuario>{
+public class UsuarioController implements IController<UsuarioDto, UsuarioRespostaDto>{
 
     private UsuarioService service;
 
@@ -26,37 +28,42 @@ public class UsuarioController implements IController<Usuario>{
     }
     @Override
     @GetMapping("/")
-    public ResponseEntity<List<Usuario>> get() {
-        List<Usuario> registro = service.get();
-        return ResponseEntity.ok(registro);
+    public ResponseEntity<List<UsuarioRespostaDto>> get() {
+        List<Usuario> registros = service.get();
+        List<UsuarioRespostaDto> respostaDto = registros.stream().map(UsuarioRespostaDto::transformaEmDto).toList();
+        return ResponseEntity.ok(respostaDto);
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> get(@PathVariable("id") Long id) {
+    public ResponseEntity<UsuarioRespostaDto> get(@PathVariable("id") Long id) {
         Usuario registro = service.get(id);
-        return ResponseEntity.ok(registro);
+        return ResponseEntity.ok(UsuarioRespostaDto.transformaEmDto(registro));
     }
 
     @Override
     @PostMapping("/")
-    public ResponseEntity<Usuario> insert(@RequestBody Usuario objeto) {
-        Usuario registro = service.save(objeto);
-        return ResponseEntity.status(201).body(registro);
+    public ResponseEntity<UsuarioRespostaDto> insert(@RequestBody UsuarioDto objeto) {
+    
+        Usuario registro = service.save(objeto.transformaParaObjeto());
+        return ResponseEntity.status(201).body(UsuarioRespostaDto.transformaEmDto(registro));
     }
 
     @Override
     @PutMapping("/")
-    public ResponseEntity<Usuario> update(@RequestBody Usuario objeto) {
-        Usuario registro = service.save(objeto);
-        return ResponseEntity.ok(registro);
+    public ResponseEntity<UsuarioRespostaDto> update(@RequestBody UsuarioDto objeto) {
+
+        Usuario registro = service.save(objeto.transformaParaObjeto());
+        return ResponseEntity.ok(UsuarioRespostaDto.transformaEmDto(registro));
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<Usuario> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<UsuarioRespostaDto> delete(@PathVariable("id") Long id) {
         service.delete(id);
         return ResponseEntity.ok().build();
     }
+
+
     
 }
