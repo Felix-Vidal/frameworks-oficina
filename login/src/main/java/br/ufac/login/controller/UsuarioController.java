@@ -30,7 +30,7 @@ public class UsuarioController implements IController<UsuarioDto, UsuarioRespost
     @GetMapping("/")
     public ResponseEntity<List<UsuarioRespostaDto>> get() {
         List<Usuario> registros = service.get();
-        List<UsuarioRespostaDto> respostaDto = registros.stream().map(UsuarioRespostaDto::transformaEmDto).toList();
+        List<UsuarioRespostaDto> respostaDto = registros.stream().map(UsuarioRespostaDto::toDto).toList();
         return ResponseEntity.ok(respostaDto);
     }
 
@@ -38,23 +38,23 @@ public class UsuarioController implements IController<UsuarioDto, UsuarioRespost
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioRespostaDto> get(@PathVariable("id") Long id) {
         Usuario registro = service.get(id);
-        return ResponseEntity.ok(UsuarioRespostaDto.transformaEmDto(registro));
+        return ResponseEntity.ok(UsuarioRespostaDto.toDto(registro));
     }
 
     @Override
     @PostMapping("/")
     public ResponseEntity<UsuarioRespostaDto> insert(@RequestBody UsuarioDto objeto) {
     
-        Usuario registro = service.save(objeto.transformaParaObjeto());
-        return ResponseEntity.status(201).body(UsuarioRespostaDto.transformaEmDto(registro));
+        Usuario registro = service.save(UsuarioDto.toEntity(objeto));
+        return ResponseEntity.status(201).body(UsuarioRespostaDto.toDto(registro));
     }
 
     @Override
     @PutMapping("/")
     public ResponseEntity<UsuarioRespostaDto> update(@RequestBody UsuarioDto objeto) {
 
-        Usuario registro = service.save(objeto.transformaParaObjeto());
-        return ResponseEntity.ok(UsuarioRespostaDto.transformaEmDto(registro));
+        Usuario registro = service.save(UsuarioDto.toEntity(objeto));
+        return ResponseEntity.ok(UsuarioRespostaDto.toDto(registro));
     }
 
     @Override
