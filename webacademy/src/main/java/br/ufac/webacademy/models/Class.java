@@ -1,6 +1,7 @@
 package br.ufac.webacademy.models;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -9,30 +10,30 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-public class Student implements Serializable {
+public class Class implements Serializable{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true, updatable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @ManyToOne
+    private Course course;
 
-    private String email;
+    @ManyToOne
+    private Teacher teacher;
 
-    @Column(columnDefinition = "CHAR(11)", nullable = false, unique = true)
-    private String cpf;
+    private Long year;
 
-    @ManyToMany(mappedBy = "students")
-    private List<Class> teste;
+    private String semester;
 
-    @OneToOne
-    private Assessment assessment;
+    @ManyToMany
+    private List<Student> students;
 }
